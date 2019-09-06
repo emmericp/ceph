@@ -82,9 +82,10 @@ class _Write(object):
     def __init__(self, _writer=None, prefix='', suffix='', flush=False):
         # we can't set sys.stderr as the default for _writer. Otherwise
         # pytest's capturing gets confused
-        if not _writer:
-            _writer = sys.stderr
-        self._writer = _Write._unicode_output_stream(_writer)
+        if not sys.__stderr__.isatty():
+            self._writer = sys.stderr
+        else:
+            self._writer = _Write._unicode_output_stream(sys.stderr)
         sys.stderr = self._writer
         self.suffix = suffix
         self.prefix = prefix
